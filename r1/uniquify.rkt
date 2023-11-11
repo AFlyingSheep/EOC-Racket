@@ -6,6 +6,7 @@
 ;;;      | var | (let ([var exp]) exp)
 ;;;R1 ::= (program exp)
 
+;; uniquify : Lvar -> Lvar
 (define (uniquify-exp env)
   (lambda (e sym-table)
     (match e
@@ -56,21 +57,22 @@
        (Prim op (for/list ([e es]) ((uniquify-exp env) e sym-table)))])))
 
 (define (dict-set-ret dict x y) (dict-set! dict x y) dict)
-; (define (test_program body) 
-;     (uniquify-exp body (make-hash))
-; )
-; (display (test_program `(program () 42)))
-; (display "\n")
 
 ; expression
 ; `apple : #<Var: apple>
 ; `42 / 42 : #<Int: 42>
 
 ; unit test
+(define (Unit-test exp) 
+  (display ((uniquify-exp `()) (parse-exp exp) (make-hash)))
+  (display "\n")
+)
 
-(display ((uniquify-exp `()) (parse-exp `(let ([x 32]) (+ (let ([x 10]) x) x))) (make-hash)))
-(display "\n")
-(display ((uniquify-exp `()) (parse-exp 
+(Unit-test 42)
+; (Unit-test `apple)  ; error!
+(Unit-test `(+ 42 68))
+(Unit-test `(let ([x 32]) (+ (let ([x 10]) x) x)))
+(Unit-test 
   `(let ([x 32]) 
    (+ 
      (let ([x 10]) 
@@ -81,5 +83,5 @@
       )
      x)) 
     x
-    ))) (make-hash)))
-(display "\n")
+    ))
+)
