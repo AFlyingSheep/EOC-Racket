@@ -2,6 +2,7 @@
 (require "utilities.rkt")
 (require racket/dict)
 (require "explicater-control.rkt")
+(provide select-instructions)
 
 ;; select-instructions : Cvar -> x86var
 
@@ -64,6 +65,7 @@
 )
 
 (define (select-instructions* p i-list)
+
   (match p
     ; If it's Seq, handout current element and also return Seq
     [(Seq s tail)
@@ -73,10 +75,10 @@
     ]
     [(Return e)
         (match e
-            [(Prim _ _) (append i-list (normal-assign (Reg 'rax) e) (Jmp 'conclusion))]
-            [(Var _) (append i-list (list (Instr 'mov (list (atom-to-x86 e) (Reg 'rax)))
+            [(Prim _ _) (append i-list (normal-assign (Reg 'rax) e) (list (Jmp 'conclusion)))]
+            [(Var _) (append i-list (list (Instr 'movq (list (atom-to-x86 e) (Reg 'rax)))
                            (Jmp 'conclusion)))]
-            [(Int _) (append (list (Instr 'mov (list (atom-to-x86 e) (Reg 'rax)))
+            [(Int _) (append (list (Instr 'movq (list (atom-to-x86 e) (Reg 'rax)))
                            (Jmp 'conclusion)))]
         )
     ]
@@ -97,25 +99,25 @@
   (display "\n")
 )
 
-(Unit-test 42)
-(Unit-test `(+ 21 42))
-(Unit-test `(- 42))
-(Unit-test `(let ([x (read)]) x))
-(Unit-test `(let ([y (let ([x.1 20]) (let ([x.2 22]) (+ x.1 x.2)))]) y))
-(Unit-test 
-    `(let ([tmp0 (- 3)])
-        (let ([tmp1 (- 2)])
-            (let ([tmp2 (+ 1 tmp1)])
-                (let ([tmp3 (+ tmp0 tmp2)])
-                    (let ([tmp4 (+ 1 2)])
-                        (let ([tmp5 (read)])
-                            (let ([tmp6 (- tmp4 tmp5)])
-                                (+ tmp3 tmp6)
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    )
-)
+; (Unit-test 42)
+; (Unit-test `(+ 21 42))
+; (Unit-test `(- 42))
+; (Unit-test `(let ([x (read)]) x))
+; (Unit-test `(let ([y (let ([x.1 20]) (let ([x.2 22]) (+ x.1 x.2)))]) y))
+; (Unit-test 
+;     `(let ([tmp0 (- 3)])
+;         (let ([tmp1 (- 2)])
+;             (let ([tmp2 (+ 1 tmp1)])
+;                 (let ([tmp3 (+ tmp0 tmp2)])
+;                     (let ([tmp4 (+ 1 2)])
+;                         (let ([tmp5 (read)])
+;                             (let ([tmp6 (- tmp4 tmp5)])
+;                                 (+ tmp3 tmp6)
+;                             )
+;                         )
+;                     )
+;                 )
+;             )
+;         )
+;     )
+; )
