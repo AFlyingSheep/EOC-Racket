@@ -63,18 +63,22 @@
       (define-values (new-es sss)
         (for/lists (l1 l2) ([e es]) (rco-atom e)))
       ; (display new-es)
-      (display "\n")
+      ; (display "\n")
       (unpack (append* sss) (Prim op new-es))
     ]
   )
 )
 
 ;; remove-complex-opera* : Lvar -> Lvar^mon
-(define (remove-complex-opera* exp) (rco-exp exp))
+(define (remove-complex-opera* exp) 
+  (match exp
+    [(Program info e) (Program info (rco-exp e))]
+  )
+)
 
 ; unit test (without uniquify)
 (define (Unit-test exp) 
-  (display (rco-exp (parse-exp exp)))
+  (display (remove-complex-opera* (Program '() (parse-exp exp))))
   (display "\n")
 )
 

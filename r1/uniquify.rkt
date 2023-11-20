@@ -58,13 +58,17 @@
 
 (define (dict-set-ret dict x y) (dict-set! dict x y) dict)
 
+(define (uniquify p)
+  (match p
+    [(Program info e) (Program info ((uniquify-exp '()) e (make-hash)))]))
+
 ; expression
 ; `apple : #<Var: apple>
 ; `42 / 42 : #<Int: 42>
 
 ; unit test
 (define (Unit-test exp) 
-  (display ((uniquify-exp `()) (parse-exp exp) (make-hash)))
+  (display (uniquify (Program '() ((uniquify-exp `()) (parse-exp exp) (make-hash)))))
   (display "\n")
 )
 

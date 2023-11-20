@@ -63,13 +63,13 @@
     )
 )
 
-(define (select-instructions p i-list)
+(define (select-instructions* p i-list)
   (match p
     ; If it's Seq, handout current element and also return Seq
     [(Seq s tail)
         ; handout the s
         (define new-list (append i-list (stmt-to-x86 s)))
-        (select-instructions tail new-list)
+        (select-instructions* tail new-list)
     ]
     [(Return e)
         (match e
@@ -83,13 +83,17 @@
   )
 )
 
-
+(define (select-instructions exp)
+  (match exp
+    [(Program info e) (Program info (select-instructions* e '()))]
+  )
+)
 
 ; unit test (without uniquify)
 (define (Unit-test exp) 
-  (define-values (a b) (explicate-tail (parse-exp exp)))
-  (define ll (select-instructions b '()))
-  (display ll)
+  (define eexp (explicate-control (Program '() (parse-exp exp))))
+  (define eeexp (select-instructions eexp))
+  (display eeexp)
   (display "\n")
 )
 
