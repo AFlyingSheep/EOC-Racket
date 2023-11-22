@@ -48,12 +48,12 @@
 
 (define (assign-homes p)
   (match p
-    [(Program info e) (Program info (assign-homes-impl e (create-homes info)))]
+    [(Program info e) (Program info (assign-homes-impl e (create-homes (dict-ref info 'symbol-table))))]
   )
 )
 
 (define (Unit-test exp)
-  (define eexp (explicate-control (Program '() (parse-exp exp))))
+  (define eexp (explicate-control (Program (make-hash) (parse-exp exp))))
   (display eexp)
   (display "\n")
   (define eeexp (select-instructions eexp))

@@ -48,13 +48,14 @@
 (define (explicate-control p)
     (match p
     [(Program info body) 
-        (define-values (exp table) (explicate-tail body info))
-        (Program table exp)
+        (define-values (exp table) (explicate-tail body '()))
+        (dict-set! info 'symbol-table table)
+	(Program info exp)
     ]))
 
 ; unit test (without uniquify)
 (define (Unit-test exp) 
-  (display (explicate-control (Program '() (parse-exp exp))))
+  (display (explicate-control (Program (make-hash) (parse-exp exp))))
   (display "\n")
 )
 
@@ -62,8 +63,8 @@
 
 ; (Unit-test 42)
 ; (Unit-test `(+ 42 68))
-; (Unit-test `(let ([x 10]) x))
-; (Unit-test `(let ([y (let ([x.1 20]) (let ([x.2 22]) (+ x.1 x.2)))]) y))
+ (Unit-test `(let ([x 10]) x))
+ (Unit-test `(let ([y (let ([x.1 20]) (let ([x.2 22]) (+ x.1 x.2)))]) y))
 ; (Unit-test 
 ;     `(let ([tmp0 (- 3)])
 ;         (let ([tmp1 (- 2)])
