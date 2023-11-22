@@ -3,7 +3,7 @@
 (require racket/dict)
 (require "select-instructions.rkt")
 (require "explicater-control.rkt")
-
+(require "patch-instructions.rkt")
 ;; assign-homes : x86var -> x86var
 
 (define (create-homes env)
@@ -52,17 +52,33 @@
   )
 )
 
+(define (display-ins ins)
+  (for/list ([i ins])
+    (write i)
+  )
+)
+
+(define (display-prog p)
+  (match p
+    [(Program info e) (display-ins e)]
+  )
+)
+
 (define (Unit-test exp)
   (define eexp (explicate-control (Program (make-hash) (parse-exp exp))))
-  (display eexp)
-  (display "\n")
+;  (display eexp)
+;  (display "\n")
   (define eeexp (select-instructions eexp))
-  (display eeexp)
-  (display "\n")
+;  (display eeexp)
+;  (display "\n")
   (define eeeexp (assign-homes eeexp))
-  (display eeeexp)
-  (display "\n")
-)
+  ; (display eeeexp)
+  ; (display "\n")
+  (define eeeeexp (patch-instructions eeeexp))
+  (display eeeeexp)
+  (newline)
+  ; (display-prog eeeeexp)
+ )
 
 (Unit-test 42)
 (Unit-test `(+ 21 42))
