@@ -50,6 +50,7 @@
     [(Program info body) 
         (define-values (exp table) (explicate-tail body '()))
         (dict-set! info 'symbol-table table)
+	(dict-set! info 'symbol-num (length table))
 	(Program info exp)
     ]))
 
