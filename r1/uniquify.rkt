@@ -1,6 +1,7 @@
 #lang racket
 (require "utilities.rkt")
 (require racket/dict)
+(provide uniquify) 
 
 ;;;exp ::= int | (read) | (- exp) | (+ exp exp)
 ;;;      | var | (let ([var exp]) exp)
@@ -61,31 +62,3 @@
 (define (uniquify p)
   (match p
     [(Program info e) (Program info ((uniquify-exp '()) e (make-hash)))]))
-
-; expression
-; `apple : #<Var: apple>
-; `42 / 42 : #<Int: 42>
-
-; unit test
-(define (Unit-test exp) 
-  (display (uniquify (Program '() ((uniquify-exp `()) (parse-exp exp) (make-hash)))))
-  (display "\n")
-)
-
-(Unit-test 42)
-; (Unit-test `apple)  ; error!
-(Unit-test `(+ 42 68))
-(Unit-test `(let ([x 32]) (+ (let ([x 10]) x) x)))
-(Unit-test 
-  `(let ([x 32]) 
-   (+ 
-     (let ([x 10]) 
-     (+ 
-      (+
-        (let ([x 5]) x) 
-        (let ([x 6]) x)
-      )
-     x)) 
-    x
-    ))
-)
